@@ -2,6 +2,7 @@
 import { auth } from "@/fetching/auth";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,18 +10,28 @@ export default function Login() {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const handleShow = () => setShowPassword(!showPassword);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleShow = () => setShowPassword(!showPassword);
+
+  const handleLoading = () => setLoading(!loading);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await auth({ email, password });
+      const token = response.accessToken;
+      setLoading(true)
 
-      if (!response.accessToken) {
+      if (!token) {
         setError(true);
+        setLoading(false)
       } else {
+        Cookies.set('accessToken', token);
         setSuccess(true);
+        setLoading(false)
+
         router.push("/");
       }
     } catch (error) {
@@ -420,11 +431,11 @@ export default function Login() {
                 </div>
               </div>
               <div>
-                <input
+                <button
                   type="submit"
                   className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black  focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 mt-5"
-                  value={"Login"}
-                />
+                  onClick={handleLoading}
+                >{loading ? "Loading..." : "Login"}</button>
               </div>
             </form>
           </div>
