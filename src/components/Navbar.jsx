@@ -59,12 +59,12 @@ export default function Navbar() {
     <div className='mb-[70px]'>
       <div className="w-full flex justify-between items-center p-3 shadow-sm bg-gray-300 px-2 sm:px-10 fixed top-0 left-0">
         <div className="flex items-center">
-          <button onClick={() => setNav(!nav)} className='rounded-md hover:bg-slate-400 p-2'>
+          <button onClick={() => setNav(!nav)} className='rounded-md hover:bg-gray-400 p-2'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-black">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
           </button>
-          <h1 className='text-2xl sm:text-3xl px-2 font-bold text-black'>
+          <h1 className='text-xl sm:text-2xl px-2 font-bold text-black'>
             Stack <span className='text-blue-500'>Master</span>
           </h1>
         </div>
