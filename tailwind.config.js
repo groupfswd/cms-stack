@@ -18,6 +18,6 @@ module.exports = {
     require('daisyui'),
   ],
   daisyui: {
-    theme: ['dark',],
-  }
+    themes: ["cmyk"],
+  },
 };
