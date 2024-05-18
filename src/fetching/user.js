@@ -5,7 +5,7 @@ const accessToken = Cookies.get("accessToken")
 
 export async function getUserById(params) {
   try {
-    const res = await fetch(`${BASE_URL}/cms/users/${params}`, {
+    const res = await fetch(`${BASE_URL}/users/${params}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`

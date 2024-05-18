@@ -2,6 +2,7 @@
 import { updateUser, getUserById } from "@/fetching/user";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from 'next/link'
 
 export default function UpdateUserPage() {
   const [fullname, setFullname] = useState("")
@@ -12,17 +13,27 @@ export default function UpdateUserPage() {
 
   useEffect(() => {
     const fetchUserById = async () => {
-      const user = await getUserById(id)
+      try {
+        const user = await getUserById(id)
 
-      setFullname(user.fullname)
-      setEmail(user.email)
-      setPhoneNumber(user.phone_number)
+        if (user.id !== parseInt(id)) {
+          router.push('/error-not-found')
+        }
+
+        setFullname(user.fullname)
+        setEmail(user.email)
+        setPhoneNumber(user.phone_number)
+      } catch (err) {
+        console.log(err);
+      }
     }
-    fetchUserById()
+
+    fetchUserById(id)
   }, [id])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     const formData = new FormData(e.target);
     const user = Object.fromEntries(formData.entries());
     try {
@@ -41,48 +52,60 @@ export default function UpdateUserPage() {
   return (
     <div>
       <div className="flex justify-center h-screen items-center">
-        <div className="flex w-96 py-4 border rounded-lg">
-          <form onSubmit={handleSubmit} className="flex flex-col w-full mx-5 items-center">
-            <h2 className="text-xl font-semibold py-4">Edit Profile</h2>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Fullname</span>
-              </div>
-              <input
-                type="text" placeholder="Type here"
-                className="input input-bordered w-full max-w-xs"
-                name="fullname"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)} />
-            </label>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Email</span>
-              </div>
-              <input
-                type="text" placeholder="Type here"
-                className="input input-bordered w-full max-w-xs"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} />
-            </label>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Fullname</span>
-              </div>
-              <input
-                type="text" placeholder="Type here"
-                className="input input-bordered w-full max-w-xs"
-                name="phone_number"
-                value={phone_number}
-                onChange={(e) => setPhoneNumber(e.target.value)} />
-            </label>
-            <div className="flex my-6 w-full justify-center">
+        <div className="flex w-[400px] py-4 border rounded-lg items-center justify-center">
+          <form onSubmit={handleSubmit}>
+            <h2 className="text-xl font-semibold py-4 text-center">Edit Profile</h2>
+            <div>
+              <label className="form-control w-[500px] max-w-xs">
+                <div className="label">
+                  <span className="label-text">Fullname</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered max-w-xs"
+                  name="fullname"
+                  value={fullname}
+                  onChange={(e) => setFullname(e.target.value)} />
+              </label>
+            </div>
+            <div>
+              <label className="form-control max-w-xs">
+                <div className="label">
+                  <span className="label-text">Email</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered max-w-xs"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)} />
+              </label>
+            </div>
+            <div>
+              <label className="form-control max-w-xs">
+                <div className="label">
+                  <span className="label-text">Fullname</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered max-w-xs"
+                  name="phone_number"
+                  value={phone_number}
+                  onChange={(e) => setPhoneNumber(e.target.value)} />
+              </label>
+            </div>
+            <div className="flex my-6 justify-end">
               <button
                 type="submit"
-                className="btn btn-primary w-full max-w-xs">
+                className="btn btn-primary max-w-xs mr-2">
                 Save
               </button>
+              <Link href='/'>
+                <button
+                  className="btn btn-active max-w-xs">
+                  Cancel
+                </button>
+              </Link>
             </div>
           </form>
         </div>
