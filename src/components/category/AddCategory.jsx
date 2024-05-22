@@ -14,7 +14,6 @@ export default function addCategory() {
     async function handleSubmit(e){
         e.preventDefault();
 
-        console.log(accessToken);
         await fetch(`${BASE_URL}/cms/categories`, {
             method: 'POST',
             headers: {
