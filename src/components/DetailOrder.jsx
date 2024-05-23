@@ -4,7 +4,7 @@ export default function DetailOrder({ order }) {
   return (
     <div>
       <div className="w-full">
-        <h1 className="text-xl font-bold text-center pt-10">Detail Order</h1>
+        <h1 className="text-xl font-bold text-center pt-5">Detail Order</h1>
         <div className="flex justify-center items-center pt-10">
           <div className="flex flex-col mx-10 border">
             <div className="flex justify-center">
