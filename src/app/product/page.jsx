@@ -3,15 +3,9 @@ import { getCategory } from "@/fetching/category";
 import AddProduct from "@/components/product/AddProduct";
 import DeleteProduct from "@/components/product/DeleteProduct";
 import UpdateProduct from "@/components/product/UpdateProduct";
+import { convertToRupiah } from "@/lib/convertRupiah";
 
 export default async function ProductPage() {
-    function convertToRupiah(angka) {
-        var rupiah = '';
-        var angkarev = angka.toString().split('').reverse().join('');
-        for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-        return 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
-    }
-
     const [category, products] = await Promise.all([
         getCategory(),
         getAllProducts()
