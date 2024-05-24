@@ -14,6 +14,10 @@ export default function OrderPage() {
   const [pagination, setPagination] = useState({});
   const [filterStatus, setFilterStatus] = useState("");
   const [time, setTime] = useState("");
+  const [searchId, setSearchId] = useState("");
+  const [error, setError] = useState(false);
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
 
   const handleFilterChange = (e) => {
     const { value } = e.target;
@@ -44,8 +48,24 @@ export default function OrderPage() {
     window.history.pushState(null, "", `/order?page=${page}${newUrl}`);
   };
 
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchId(value);
+  };
+
+  const handleSearch = () => {
+    if (!searchId) {
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    } else {
+      const newPath = `?q=id ${searchId}`;
+
+      window.history.pushState(null, "", newPath);
+      window.location.reload();
+    }
+  };
 
   useEffect(() => {
     const getAllOrders = async () => {
@@ -64,23 +84,47 @@ export default function OrderPage() {
         setListOrders(data.data);
         setCurrentPage(data.currentPage);
         setTotalPage(data.totalPages);
-        setLoading(false);
         setPagination({
           currentPage: data.currentPage,
-          totalPages: data.totalPages
+          totalPages: data.totalPages,
         });
+        setLoading(false);
       } catch (err) {
         console.log(err);
-      } finally {
-        setLoading(false);
       }
     };
 
     getAllOrders(currentPage);
   }, [currentPage]);
 
+  const handleReset = () => {
+    window.history.pushState(null, "", "/order");
+    window.location.reload();
+  };
+
   return (
     <div>
+      {error && (
+        <div
+          role="alert"
+          className="alert alert-error flex fixed z-10 w-80 right-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>Error! ID cannot be empty</span>
+        </div>
+      )}
       {loading ? (
         <div className="flex h-[500px] items-center justify-center">
           <span className="loading loading-dots loading-lg"></span>
@@ -88,11 +132,15 @@ export default function OrderPage() {
       ) : (
         <TableOrder
           orders={listOrders}
+          filterStatus={filterStatus}
+          time={time}
+          searchId={searchId}
           handleFilterChange={handleFilterChange}
           handleTimeChange={handleTimeChange}
           handleSortOrders={handleSortOrders}
-          filterStatus={filterStatus}
-          time={time}
+          handleSearchChange={handleSearchChange}
+          handleSearch={handleSearch}
+          handleReset={handleReset}
         />
       )}
       {totalPage === currentPage && currentPage === 1 ? null : (

@@ -1,150 +1,41 @@
-import { updateOrder } from "@/fetching/order";
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function TableOrder({
   orders,
+  filterStatus,
+  time,
+  searchId,
   handleTimeChange,
   handleFilterChange,
   handleSortOrders,
-  filterStatus,
-  time,
+  handleSearchChange,
+  handleSearch,
+  handleReset,
 }) {
-
-  const [orderId, setOrderId] = useState("");
-  const [status, setStatus] = useState("");
-  const [searchId, setSearchId] = useState("");
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const router = useRouter()
-
-  const handleSearchChange = (e) => {
-    const { value } = e.target;
-    setSearchId(value);
-  };
-
-  const handleSearch = () => {
-    const newPath = `?q=id ${searchId}`;
-
-    window.history.pushState(null, "", newPath);
-    window.location.reload();
-  };
-
-  const handleChangeStatus = (e, order) => {
-    const updatedOrders = orders.map((index) => {
-      if (index.id === order.id) {
-        return { ...index, status: e.target.value };
-      }
-      return index;
-    });
-
-    setStatus(e.target.value);
-    setOrderId(order.id);
-  };
-
-  const handleUpdate = async () => {
-    try {
-      const res = await updateOrder(orderId, { status });
-
-      if (res === undefined) {
-        setError(true);
-      } else {
-        router.push('/order');
-        window.location.reload();
-        setSuccess(true);
-      }
-    } catch (err) {
-      setError(true);
-      console.log(err);
-    } finally {
-      setTimeout(() => {
-        setSuccess(false);
-        setError(false);
-      }, 3000);
-    }
-  };
-
   const convertDate = (orderDate) => {
     const createdAt = new Date(orderDate);
     const createdDate = createdAt.toLocaleDateString("id-ID");
     return createdDate;
   };
 
-  const handleSelect = (e) => {
-    if (e === "cancelled") {
-      value(cancelled);
-    } else if (e === "approved") {
-      value(approved);
-    } else if (e === "shipping") {
-      value(shipping);
-    } else if (e === "delivered") {
-      value(delivered);
-    } else if (e === "completed") {
-      value(completed);
-    }
-  };
-
   const statusColors = {
-    waiting_payment: "border border-yellow-500 text-yellow-500",
-    waiting_approval: "border border-yellow-500 text-yellow-500",
-    cancelled: "border border-red-500 text-red-500",
-    approved: "border border-purple-500 text-purple-500",
-    shipping: "border border-sky-500 text-sky-500",
-    delivered: "border border-blue-500 text-blue-500",
-    completed: "border border-green-500 text-green-500",
+    waiting_payment: "bg-yellow-500",
+    waiting_approval: "bg-yellow-500",
+    cancelled: "bg-red-500",
+    approved: "bg-purple-500",
+    shipping: "bg-sky-500",
+    delivered: "bg-blue-500",
+    completed: "bg-green-500"
   };
 
   return (
     <div>
-      {success && (
-        <div
-          role="alert"
-          className="alert alert-success flex fixed z-10 w-80 right-0"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>Order Updated Successfully!</span>
-        </div>
-      )}
-      {error && (
-        <div
-          role="alert"
-          className="alert alert-error flex fixed z-10 w-80 right-0"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>Error! Failed to update order</span>
-        </div>
-      )}
       <h1 className="text-xl font-bold pt-5 pb-2 text-center">List Orders</h1>
       <div className="mb-3 flex px-10 justify-between">
         <div className="flex gap-2">
           <div className="flex">
             <details className="dropdown">
-              <summary className="btn">
+              <summary className="btn btn-ghost">
                 Status
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -258,7 +149,7 @@ export default function TableOrder({
           </div>
           <div className="flex">
             <details className="dropdown">
-              <summary className="btn">
+              <summary className="btn btn-ghost">
                 Time
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -332,8 +223,38 @@ export default function TableOrder({
             </details>
           </div>
           <div>
-            <button className="btn btn-primary" onClick={handleSortOrders}>
+            <button className="btn btn-default" onClick={handleSortOrders}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"
+                />
+              </svg>
               Filter
+            </button>
+          </div>
+          <div>
+            <button className="btn btn-default" onClick={handleReset}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="size-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
           </div>
         </div>
@@ -351,7 +272,7 @@ export default function TableOrder({
             </label>
           </div>
           <div>
-            <button onClick={handleSearch} className="btn btn-info">
+            <button onClick={handleSearch} className="btn btn-primary">
               Search
             </button>
           </div>
@@ -397,43 +318,17 @@ export default function TableOrder({
                 <td>{order.payment_receipt ? order.payment_receipt : "N/A"}</td>
                 <td>{convertDate(order.created_at)}</td>
                 <td>
-                  <div>
-                    <select
-                      className={`select w-full ${statusColors[order.status]}`}
-                      name="status"
-                      defaultValue={order.status}
-                      onChange={(e) => handleChangeStatus(e, order)}
-                    >
-                      <option disabled>{order.status}</option>
-                      <option
-                        value="cancelled"
-                        onChange={(e) => handleSelect(e)}
-                        className="text-black"
-                      >
-                        cancelled
-                      </option>
-                      <option value="approved" className="text-black">
-                        approved
-                      </option>
-                      <option value="shipping" className="text-black">
-                        shipping
-                      </option>
-                      <option value="delivered" className="text-black">
-                        delivered
-                      </option>
-                      <option value="completed" className="text-black">
-                        completed
-                      </option>
-                    </select>
+                  <div
+                    className={`p-4 text-white badge ${statusColors[order.status]
+                      }`}
+                  >
+                    {order.status}
                   </div>
                 </td>
                 <td>
-                  <div>
-                    <div className="tooltip" data-tip="Update">
-                      <button
-                        onClick={() => handleUpdate()}
-                        className="btn btn-success mr-2"
-                      >
+                  <div className="tooltip" data-tip="detail">
+                    <Link href={`/order/${order.id}`}>
+                      <button className="btn btn-info p-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -445,31 +340,12 @@ export default function TableOrder({
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
                           />
                         </svg>
+                        Detail
                       </button>
-                    </div>
-                    <div className="tooltip" data-tip="detail">
-                      <Link href={`/order/${order.id}`}>
-                        <button className="btn btn-info">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                            />
-                          </svg>
-                        </button>
-                      </Link>
-                    </div>
+                    </Link>
                   </div>
                 </td>
               </tr>
