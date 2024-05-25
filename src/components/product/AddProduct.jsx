@@ -30,7 +30,7 @@ export default function AddProduct ({...dataCategories}) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [description, setDescription] = useState("")
-    const [image, setImage] = useState(null)
+    const [image, setImage] = useState("")
     const [modal, setModal] = useState(false);
     const router = useRouter();
 
@@ -68,7 +68,7 @@ export default function AddProduct ({...dataCategories}) {
         setPrice("");
         setWeight("");
         setDescription("");
-        setImage(null);
+        setImage("");
         router.refresh();
         setModal(false);
     }

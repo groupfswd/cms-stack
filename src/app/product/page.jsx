@@ -4,18 +4,31 @@ import AddProduct from "@/components/product/AddProduct";
 import DeleteProduct from "@/components/product/DeleteProduct";
 import UpdateProduct from "@/components/product/UpdateProduct";
 import { convertToRupiah } from "@/lib/convertRupiah";
+import DetailProduct from "@/components/product/DetailProduct";
+import Search from "@/components/product/Search";
+import SearchMinRange from "@/components/product/SearchMinRange";
 
-export default async function ProductPage() {
+export default async function ProductPage({searchParams}) {
+    const query = searchParams?.search || "";
+    const min_price = +searchParams?.min_price || "";
+    const currentPage = +searchParams?.page || 1;
     const [category, products] = await Promise.all([
         getCategory(),
-        getAllProducts()
+        getAllProducts(query, min_price, currentPage)
     ])
     return (
     <>
         <div className="container mx-auto">
         <h1 className="text-xl font-bold py-5 text-center">List Products</h1>
-            <div className="relative overflow-x-auto shadow-md mt-5">
-            <AddProduct category={category}/>
+            <div className="relative overflow-x-auto mt-5">
+                <AddProduct category={category} />
+                <div className="grid grid-cols-3 mt-3">
+                    <Search className="col-span-2"/>
+                    <div className="grid col-span-2 grid-cols-2 ml-auto gap-2">
+                        <SearchMinRange />
+                        <SearchMinRange />
+                    </div>
+                </div>
                 <table className="table text-black dark:text-gray-400 text-center mt-5 border">
                     <thead className="text-xs uppercase">
                         <tr>
@@ -84,6 +97,8 @@ export default async function ProductPage() {
                                     {product.description}
                                 </td>
                                 <td className="px-6 py-4 flex justify-center">
+                                    <DetailProduct product={product} category={category}/>
+                                    |
                                     <UpdateProduct product={product} category={category}/>
                                     |
                                     <DeleteProduct {...product}/>
