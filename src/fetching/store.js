@@ -109,3 +109,24 @@ export async function deleteStore(params) {
     console.log(err);
   }
 }
+
+export async function getCities() {
+  try {
+    const res = await fetch(`${BASE_URL}/cities`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    })
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch cities");
+    }
+
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}

@@ -1,5 +1,5 @@
 "use client";
-import { getStoreById, updateStore } from "@/fetching/store";
+import { getStoreById, updateStore, getCities } from "@/fetching/store";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -7,10 +7,12 @@ export default function UpdateStore() {
   const [city_id, setCityId] = useState("");
   const [name, setName] = useState("");
   const [bank_name, setBankName] = useState("");
+  const [bank_account, setBankAccount] = useState("");
   const [street_address, setStreetAddress] = useState("");
   const [province, setProvince] = useState("");
   const [postal_code, setPostalCode] = useState("");
   const [success, setSuccess] = useState(false);
+  const [cities, setCities] = useState([]);
 
   const { id } = useParams(true);
   const router = useRouter();
@@ -22,6 +24,7 @@ export default function UpdateStore() {
       setCityId(store.city_id);
       setName(store.name);
       setBankName(store.bank_name);
+      setBankAccount(store.bank_account);
       setStreetAddress(store.street_address);
       setProvince(store.province);
       setPostalCode(store.postal_code);
@@ -30,26 +33,38 @@ export default function UpdateStore() {
     fetchStoresById(id);
   }, [id]);
 
+  const handleIdCity = (e) => {
+    setCityId(e.target.value);
+  };
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      const data = await getCities();
+      setCities(data);
+    };
+
+    fetchCities();
+  }, []);
+
   const handleUpdate = async (e) => {
-    e.preventDefault();
-
+    e.preventDefault()
     try {
-      const res = await updateStore(id, {
-        city_id,
-        name,
-        bank_name,
-        street_address,
-        province,
-        postal_code,
+      await updateStore(id, {
+        city_id: +city_id,
+        name: name,
+        bank_name: bank_name,
+        bank_account: bank_account,
+        street_address: street_address,
+        province: province,
+        postal_code: postal_code,
       });
-
       setSuccess(true);
     } catch (err) {
       console.log(err);
     } finally {
       setTimeout(() => {
         setSuccess(false);
-        router.push('/store');
+        router.push('/store')
       }, 1000);
     }
   };
@@ -87,13 +102,18 @@ export default function UpdateStore() {
               <label className="label">
                 <span className="label-text">City id</span>
               </label>
-              <input
-                type="text"
-                className="input input-bordered mt-4 ml-3 w-72"
+              <select
+                className="select select-bordered w-72"
+                onChange={(e) => handleIdCity(e)}
                 required
-                value={city_id}
-                onChange={(e) => setCityId(e.target.value)}
-              />
+              >
+                <option value="city">{city_id}</option>
+                {cities.map((index) => (
+                  <option key={index.id} value={index.id}>
+                    {index.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="form-control flex flex-row justify-between">
               <label className="label">
@@ -117,6 +137,18 @@ export default function UpdateStore() {
                 required
                 value={bank_name}
                 onChange={(e) => setBankName(e.target.value)}
+              />
+            </div>
+            <div className="form-control flex flex-row justify-between">
+              <label className="label">
+                <span className="label-text">Bank account</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered mt-4 ml-3 w-72"
+                required
+                value={bank_account}
+                onChange={(e) => setBankAccount(e.target.value)}
               />
             </div>
             <div className="form-control flex flex-row justify-between">
@@ -155,8 +187,10 @@ export default function UpdateStore() {
                 onChange={(e) => setPostalCode(e.target.value)}
               />
             </div>
-            <div className="flex justify-end">
-              <button className="btn btn-primary w-auto my-7">Update</button>
+            <div>
+              <button className="btn btn-primary w-auto my-5 flex mx-auto">
+                Update
+              </button>
             </div>
           </form>
         </div>
