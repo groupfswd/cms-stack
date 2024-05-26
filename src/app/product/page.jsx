@@ -1,21 +1,16 @@
-import { getAllProducts } from "@/fetching/product";
 import { getCategory } from "@/fetching/category";
 import AddProduct from "@/components/product/AddProduct";
-import DeleteProduct from "@/components/product/DeleteProduct";
-import UpdateProduct from "@/components/product/UpdateProduct";
-import { convertToRupiah } from "@/lib/convertRupiah";
-import DetailProduct from "@/components/product/DetailProduct";
 import Search from "@/components/product/Search";
 import SearchMinRange from "@/components/product/SearchMinRange";
+import SearchMaxRange from "@/components/product/SearchMaxRange";
+import ListTable from "@/components/product/ListProducts";
 
 export default async function ProductPage({searchParams}) {
     const query = searchParams?.search || "";
     const min_price = +searchParams?.min_price || "";
+    const max_price = +searchParams?.max_price || "";
     const currentPage = +searchParams?.page || 1;
-    const [category, products] = await Promise.all([
-        getCategory(),
-        getAllProducts(query, min_price, currentPage)
-    ])
+    const category = await getCategory()
     return (
     <>
         <div className="container mx-auto">
@@ -26,87 +21,10 @@ export default async function ProductPage({searchParams}) {
                     <Search className="col-span-2"/>
                     <div className="grid col-span-2 grid-cols-2 ml-auto gap-2">
                         <SearchMinRange />
-                        <SearchMinRange />
+                        <SearchMaxRange />
                     </div>
                 </div>
-                <table className="table text-black dark:text-gray-400 text-center mt-5 border">
-                    <thead className="text-xs uppercase">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                #
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                CATEGORY NAME
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                PRODUCT NAME
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                SKU
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                STOCK
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                PRICE
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                WEIGHT (gram)
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                IMAGE
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                DESCRIPTION
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                ACTION
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.result.data.map((product, index) => (
-                            <tr key={product.id} className="text-black">
-                                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
-                                    {index + 1}
-                                </th>
-                                <td className="px-6 py-4">
-                                    {product.category.name}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {product.name}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {product.sku}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {product.stock}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {convertToRupiah(product.price)}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {product.weight} g
-                                </td>
-                                <td className="px-6 py-4">
-                                    <a href={product.image} target="_blank">
-                                        {<img src={product.image} width={50} height={50} alt="Picture product" />}
-                                    </a>
-                                </td>
-                                <td className="px-6 py-4">
-                                    {product.description}
-                                </td>
-                                <td className="px-6 py-4 flex justify-center">
-                                    <DetailProduct product={product} category={category}/>
-                                    |
-                                    <UpdateProduct product={product} category={category}/>
-                                    |
-                                    <DeleteProduct {...product}/>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <ListTable search={query} currentPage={currentPage} min_price={min_price} max_price={max_price}/>
             </div>
         </div>
     </>

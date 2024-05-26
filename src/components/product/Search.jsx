@@ -17,7 +17,7 @@ const Search = () => {
             params.delete("search")
         }
         replace(`${pathName}?${params.toString()}`);
-    }, 500);
+    }, 1000);
 
 
     return (
