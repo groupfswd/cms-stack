@@ -127,7 +127,7 @@ export default function AddProduct ({...dataCategories}) {
                         </div>
                         <div className="modal-action">
                             <button type="button" className='btn' onClick={handleChange}>Close</button>
-                            <button type="submit" className='btn btn-primary'>Save</button>
+                            <button type="submit" className='btn btn-primary text-white'>Save</button>
                         </div>
                     </form>
                 </div>

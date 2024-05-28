@@ -40,7 +40,7 @@ export default function DeleteProduct(product) {
                 <h2 className="font-bold text-lg mb-8">Are You Sure Delete Data?</h2>
                 <div className="modal-action flex justify-center">
                     <button type="button" className='btn' onClick={handleChange}>Close</button>
-                    <button type="button" className='btn btn-error' onClick={() => handleDelete(product.id)}>Delete</button>
+                    <button type="button" className='btn btn-error text-white' onClick={() => handleDelete(product.id)}>Delete</button>
                 </div>
             </div>
         </div>
