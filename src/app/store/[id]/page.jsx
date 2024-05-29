@@ -8,6 +8,7 @@ export default function UpdateStore() {
   const [name, setName] = useState("");
   const [bank_name, setBankName] = useState("");
   const [bank_account, setBankAccount] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
   const [street_address, setStreetAddress] = useState("");
   const [province, setProvince] = useState("");
   const [postal_code, setPostalCode] = useState("");
@@ -25,6 +26,7 @@ export default function UpdateStore() {
       setName(store.name);
       setBankName(store.bank_name);
       setBankAccount(store.bank_account);
+      setPhoneNumber(store.phone_number);
       setStreetAddress(store.street_address);
       setProvince(store.province);
       setPostalCode(store.postal_code);
@@ -54,6 +56,7 @@ export default function UpdateStore() {
         name: name,
         bank_name: bank_name,
         bank_account: bank_account,
+        phone_number: phone_number,
         street_address: street_address,
         province: province,
         postal_code: postal_code,
@@ -72,10 +75,7 @@ export default function UpdateStore() {
   return (
     <div>
       {success && (
-        <div
-          role="alert"
-          className="alert alert-success flex fixed z-10 w-80 right-0"
-        >
+        <div role="alert" className="alert alert-success flex fixed z-10 w-80 right-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="stroke-current shrink-0 h-6 w-6"
@@ -149,6 +149,18 @@ export default function UpdateStore() {
                 required
                 value={bank_account}
                 onChange={(e) => setBankAccount(e.target.value)}
+              />
+            </div>
+            <div className="form-control flex flex-row justify-between">
+              <label className="label">
+                <span className="label-text">Phone number</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered mt-4 ml-3 w-72"
+                required
+                value={phone_number}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
             <div className="form-control flex flex-row justify-between">

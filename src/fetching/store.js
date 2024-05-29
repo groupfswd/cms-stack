@@ -1,27 +1,6 @@
 import BASE_URL from "@/lib/baseUrl";
 import { accessToken } from "@/lib/getToken";
 
-export async function getStores() {
-  try {
-    const res = await fetch(`${BASE_URL}/cms/stores`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch stores");
-    }
-
-    const { data } = await res.json();
-
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 export async function getStoreById(params) {
   try {
     const res = await fetch(`${BASE_URL}/cms/stores/${params}`, {
