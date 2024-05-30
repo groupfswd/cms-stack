@@ -1,4 +1,4 @@
-import TableUser from "@/components/User";
+import TableUser from "@/components/user/User";
 import BASE_URL from "@/lib/baseUrl";
 import { cookies } from "next/headers";
 

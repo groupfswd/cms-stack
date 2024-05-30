@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
+import Link from 'next/link'
+
 
 export default function Navbar() {
   const [nav, setNav] = useState(false);
@@ -16,6 +18,7 @@ export default function Navbar() {
   const handleLogout = () => {
     Cookies.remove("accessToken");
     router.push("/login");
+    window.location.reload();
   };
 
   const menuItems = [
@@ -266,7 +269,7 @@ export default function Navbar() {
             })}
             <div className="py-2">
               <li className="text-md flex sm:hidden cursor-pointer w-[85%] ml-5 p-2 hover:text-blue-500 hover:bg-gray-200 rounded-md hover:scale-105">
-                <a href="/user/edit" className="flex flex-row">
+                <Link href="/user/edit" className="flex flex-row">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -282,7 +285,7 @@ export default function Navbar() {
                     />
                   </svg>
                   Edit Profile
-                </a>
+                </Link>
               </li>
             </div>
             <div className="py-2">

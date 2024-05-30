@@ -57,10 +57,7 @@ export default function UpdateUserPage() {
   return (
     <div>
       {success && (
-        <div
-          role="alert"
-          className="alert alert-success flex fixed z-10 w-80 right-0"
-        >
+        <div role="alert" className="alert alert-success flex fixed z-10 w-80 right-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="stroke-current shrink-0 h-6 w-6"
@@ -77,7 +74,7 @@ export default function UpdateUserPage() {
           <span>Profile Updated Successfully!</span>
         </div>
       )}
-      <div className="flex justify-center h-screen items-center">
+      <div className="flex justify-center pt-10 items-center">
         <div className="flex w-[400px] py-4 border rounded-lg items-center justify-center">
           <form onSubmit={handleSubmit}>
             <h2 className="text-xl font-semibold py-4 text-center">
