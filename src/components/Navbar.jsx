@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 import Link from 'next/link'
 
+
 export default function Navbar() {
   const [nav, setNav] = useState(false);
   const [drop, setDrop] = useState(false);
