@@ -1,7 +1,5 @@
 import BASE_URL from "@/lib/baseUrl";
-import Cookies from "js-cookie";
-
-const accessToken = Cookies.get("accessToken")
+import { accessToken } from "@/lib/getToken";
 
 export async function getUserById(params) {
   try {

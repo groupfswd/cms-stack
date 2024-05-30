@@ -14,7 +14,6 @@ export default function Login() {
   const router = useRouter();
 
   const handleShow = () => setShowPassword(!showPassword);
-
   const handleLoading = () => setLoading(!loading);
 
   const handleLogin = async (e) => {
@@ -22,16 +21,15 @@ export default function Login() {
     try {
       const response = await auth({ email, password });
       const token = response.accessToken;
-      setLoading(true)
+      setLoading(true);
 
       if (!token) {
         setError(true);
-        setLoading(false)
+        setLoading(false);
       } else {
-        Cookies.set('accessToken', token);
+        Cookies.set("accessToken", token);
         setSuccess(true);
-        setLoading(false)
-
+        setLoading(false);
         router.push("/");
       }
     } catch (error) {
@@ -355,7 +353,6 @@ export default function Login() {
                 </label>
                 <input
                   type="email"
-                  id="email"
                   name="email"
                   placeholder="Enter your email"
                   className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300 text-black"
@@ -374,7 +371,6 @@ export default function Login() {
                 <div className="flex items-center border border-gray-200 rounded-md">
                   <input
                     type={showPassword ? "text" : "password"}
-                    id="password"
                     name="password"
                     placeholder="Enter your password"
                     className="p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300 text-black"
@@ -435,7 +431,9 @@ export default function Login() {
                   type="submit"
                   className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black  focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 mt-5"
                   onClick={handleLoading}
-                >{loading ? "Loading..." : "Login"}</button>
+                >
+                  {loading ? "Loading..." : "Login"}
+                </button>
               </div>
             </form>
           </div>
