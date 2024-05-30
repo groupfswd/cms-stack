@@ -4,6 +4,7 @@ import Image from "next/image";
 import Filter from "@/components/order/Filter";
 import SearchId from "@/components/order/SearchId";
 import { convertDate } from "@/lib/convertDate";
+import { useState } from "react";
 
 export default function TableOrder({
   orders,
@@ -13,6 +14,7 @@ export default function TableOrder({
   setFilterTime,
   handleSortOrders,
 }) {
+  const [modal, setModal] = useState(false);
 
   const statusColors = {
     waiting_payment: "bg-yellow-500",
@@ -76,25 +78,33 @@ export default function TableOrder({
                 </td>
                 <td>
                   {order.payment_receipt ? (
-                    <button className="btn btn-info btn-sm" onClick={() => document.getElementById('my_modal_1').showModal()}>Show</button>
+                    <button className="btn btn-info btn-sm" onClick={() => setModal(true)}>Show</button>
                   ) : (
                     <button className="btn btn-info btn-sm" disabled>N/A</button>
                   )}
-                  <dialog id="my_modal_1" className="modal">
-                    <div className="modal-box">
-                      <Image
-                        src={order.payment_receipt}
-                        width={1300}
-                        height={1300}
-                        alt="payment receipt"
-                      />
-                      <div className="modal-action">
-                        <form method="dialog">
-                          <button className="btn btn-sm">Close</button>
-                        </form>
+                  {modal && order.payment_receipt && (
+                    <div className="flex fixed items-center justify-center mx-auto left-0 right-0 top-0 bottom-0 p-5">
+                      <div className="modal-box w-[400px]">
+                        <p className='font-bold text-left'>Payment receipt</p>
+                        <div className='flex justify-center'>
+                          <Image
+                            src={order.payment_receipt}
+                            className='w-auto h-auto'
+                            width={500}
+                            height={700}
+                            alt="payment receipt"
+                          />
+                        </div>
+                        <div className="flex justify-end my-2">
+                          <div className="modal-action">
+                            <button onClick={() => setModal(false)} className="btn btn-active btn-sm">
+                              Close
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </dialog>
+                  )}
                 </td>
                 <td>{convertDate(order.created_at)}</td>
                 <td>

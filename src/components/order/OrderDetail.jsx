@@ -4,14 +4,19 @@ import Image from "next/image";
 import { updateOrder } from "@/fetching/order";
 import { currencyFormat } from "@/lib/currencyFormat";
 import DownloadInvoice from '@/components/order/DownloadInvoice'
+import { convertDate } from '@/lib/convertDate';
 
-export default function OrderForm({ order, id, status, setStatus }) {
-  const [resError, setError] = useState(false);
+export default function OrderForm({ order, status, setStatus, no_resi, setNoResi }) {
+  const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [noResiInput, setNoResiInput] = useState(false);
 
   const handleUpdate = async () => {
     try {
-      const res = await updateOrder(id, { status: status });
+      const res = await updateOrder(order.id, {
+        status: status,
+        no_resi: no_resi
+      });
 
       if (res === undefined) {
         setError(true);
@@ -60,7 +65,7 @@ export default function OrderForm({ order, id, status, setStatus }) {
           <span>Order Updated Successfully!</span>
         </div>
       )}
-      {resError && (
+      {error && (
         <div role="alert" className="alert alert-error flex fixed z-10 w-80 right-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -78,84 +83,41 @@ export default function OrderForm({ order, id, status, setStatus }) {
           <span>Error! Failed to update order</span>
         </div>
       )}
-      <div className="w-full">
-        <h1 className="text-xl font-bold text-center py-5">Detail Order</h1>
-        <div className="flex py-5 rounded-md border border-slate-300 w-[800px] mx-auto mb-5 justify-between">
-          <div className="flex flex-col mx-5 rounded-md">
-            <div className="flex">
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <td>Delivered at</td>
-                    <td>{order.delivered_at ? order.delivered_at : "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <td>Courier</td>
-                    <td>{order.courier}</td>
-                  </tr>
-                  <tr>
-                    <td>Shipping method</td>
-                    <td>{order.shipping_method}</td>
-                  </tr>
-                  <tr>
-                    <td>Paid at</td>
-                    <td>{order.paid_at ? order.paid_at : "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <td>Payment receipt</td>
-                    <td>
-                      {order.payment_receipt ? (
-                        <button className="btn btn-info btn-sm" onClick={() => document.getElementById('my_modal_1').showModal()}>
-                          Show
-                        </button>
-                      ) : (
-                        <button className="btn btn-info btn-sm" disabled>N/A</button>
-                      )}
-                      <dialog id="my_modal_1" className="modal">
-                        <div className="modal-box">
-                          <Image
-                            src={order.payment_receipt}
-                            width={1300}
-                            height={1300}
-                            alt="payment receipt"
-                          />
-                          <div className="modal-action">
-                            <form method="dialog">
-                              <button className="btn btn-sm">Close</button>
-                            </form>
-                          </div>
-                        </div>
-                      </dialog>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Status</td>
-                    <td>
-                      <div>
-                        <select
-                          className={`select w-full border ${statusColors[order.status]}`}
-                          name="status"
-                          value={order.status}
-                          onChange={(e) => setStatus(e.target.value)}
-                        >
-                          <option disabled>{order.status}</option>
-                          <option value="cancelled" className="text-black">
-                            cancelled
-                          </option>
-                          <option value="approved" className="text-black">
-                            approved
-                          </option>
-                          <option value="shipping" className="text-black">
-                            shipping
-                          </option>
-                          <option value="delivered" className="text-black">
-                            delivered
-                          </option>
-                          <option value="completed" className="text-black">
-                            completed
-                          </option>
-                        </select>
-                      </div>
+      <h1 className="text-xl font-bold text-center py-5">Detail Order</h1>
+      <div className="flex mb-5 justify-center">
+        <div className='flex flex-col sm:flex-row border border-slate-300 p-5 rounded-md'>
+          <div className="flex flex-col h-auto mr-5">
+            <table className="table">
+              <tbody>
+                <tr>
+                  <td>Status</td>
+                  <td>
+                    <div>
+                      <select
+                        className={`select w-full border ${statusColors[status]}`}
+                        name="status"
+                        defaultValue={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                      >
+                        <option disabled>{status}</option>
+                        <option value="cancelled" className="text-black">
+                          cancelled
+                        </option>
+                        <option value="approved" className="text-black">
+                          approved
+                        </option>
+                        <option value="shipping" className="text-black">
+                          shipping
+                        </option>
+                        <option value="delivered" className="text-black">
+                          delivered
+                        </option>
+                        <option value="completed" className="text-black">
+                          completed
+                        </option>
+                      </select>
+                    </div>
+                    {order.status === 'completed' ? null : (
                       <div>
                         <button
                           onClick={() => handleUpdate()}
@@ -179,25 +141,153 @@ export default function OrderForm({ order, id, status, setStatus }) {
                           Update
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Shipping cost</td>
-                    <td>{currencyFormat(order.shipping_cost)}</td>
-                  </tr>
-                  <tr>
-                    <td>Total price product</td>
-                    <td>{currencyFormat(order.total_price)}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-bold">Total payment</td>
-                    <td className="font-bold">{currencyFormat(order.total_price + order.shipping_cost)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <td>No resi</td>
+                  <td>
+                    <div className='flex justify-between'>
+                      {noResiInput ? (
+                        <div className="w-44 mr-2">
+                          <input
+                            type="text"
+                            value={no_resi}
+                            onChange={(e) => setNoResi(e.target.value)}
+                            className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
+                            placeholder='No resi'
+                          />
+                        </div>
+                      ) : (
+                        <div><p>{no_resi}</p></div>
+                      )}
+                      <div>
+                        <button className='btn btn-sm ml-1' onClick={() => setNoResiInput(true)}>Edit</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Delivered at</td>
+                  <td>{order.delivered_at ? convertDate(order.delivered_at) : "N/A"}</td>
+                </tr>
+                <tr>
+                  <td>Courier</td>
+                  <td>{order.courier}</td>
+                </tr>
+                <tr>
+                  <td>Shipping method</td>
+                  <td>{order.shipping_method}</td>
+                </tr>
+                <tr>
+                  <td>Paid at</td>
+                  <td>{order.paid_at ? convertDate(order.paid_at) : "N/A"}</td>
+                </tr>
+                <tr>
+                  <td>Payment receipt</td>
+                  <td>
+                    {order.payment_receipt ? (
+                      <button className="btn btn-info btn-sm" onClick={() => document.getElementById('my_modal_1').showModal()}>
+                        Show
+                      </button>
+                    ) : (
+                      <button className="btn btn-info btn-sm" disabled>N/A</button>
+                    )}
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box">
+                        {order.payment_receipt ? (
+                          <div>
+                            <p className='font-bold'>Payment receipt</p>
+                            <div className='flex justify-center'>
+                              <Image
+                                src={order.payment_receipt}
+                                className='w-auto h-auto'
+                                width={500}
+                                height={700}
+                                alt="payment receipt"
+                              />
+                            </div>
+                          </div>
+                        ) : null}
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button className="btn btn-sm">Close</button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Invoice</td>
+                  <td>
+                    {order.invoice ? (
+                      <button className="btn btn-info btn-sm" onClick={() => document.getElementById('my_modal_2').showModal()}>
+                        Show
+                      </button>
+                    ) : (
+                      <button className="btn btn-info btn-sm" disabled>N/A</button>
+                    )}
+                    <dialog id="my_modal_2" className="modal">
+                      <div className="modal-box">
+                        {order.invoice ? (
+                          <div>
+                            <p className='font-bold'>Invoice</p>
+                            <div className='flex justify-center'>
+                              <Image
+                                src={order.invoice}
+                                className='w-auto h-auto'
+                                width={500}
+                                height={700}
+                                alt="invoice"
+                              />
+                            </div>
+                          </div>
+                        ) : null}
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button className="btn btn-sm">Close</button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Shipping cost</td>
+                  <td>{currencyFormat(order.shipping_cost)}</td>
+                </tr>
+                <tr>
+                  <td>Total price product</td>
+                  <td>{currencyFormat(order.total_price)}</td>
+                </tr>
+                <tr>
+                  <td className="font-bold">Total payment</td>
+                  <td className="font-bold">{currencyFormat(order.total_price + order.shipping_cost)}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div className="flex flex-col h-auto mr-5">
+            <div className="flex">
+              <h3 className="font-bold text-md my-2 ml-4">User</h3>
+            </div>
+            <table className='table'>
+              <tbody>
+                <tr>
+                  <td>Name</td>
+                  <td>{order.user.fullname}</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td>{order.user.email}</td>
+                </tr>
+                <tr>
+                  <td>Phone number</td>
+                  <td>{order.user.phone_number}</td>
+                </tr>
+              </tbody>
+            </table>
             <div className="flex">
               <h3 className="font-bold text-md my-2 ml-4">Order items</h3>
             </div>
@@ -237,6 +327,35 @@ export default function OrderForm({ order, id, status, setStatus }) {
               </table>
             </div>
           </div>
+          <div className="flex flex-col h-auto mr-5">
+            <div className="flex">
+              <h3 className="font-bold text-md my-2 ml-4">Store</h3>
+            </div>
+            <table className='table'>
+              <tbody>
+                <tr>
+                  <td>Store name</td>
+                  <td>{order.store.name}</td>
+                </tr>
+                <tr>
+                  <td>Phone number</td>
+                  <td>{order.store.phone_number}</td>
+                </tr>
+                <tr>
+                  <td>Street address</td>
+                  <td>{order.store.street_address}</td>
+                </tr>
+                <tr>
+                  <td>City</td>
+                  <td>{order.store.city.name}</td>
+                </tr>
+                <tr>
+                  <td>Postal code</td>
+                  <td>{order.store.postal_code}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div className="flex flex-col mx-3">
             <div className="flex justify-end mb-3">
               <Link href="/order">
@@ -259,7 +378,7 @@ export default function OrderForm({ order, id, status, setStatus }) {
                 </button>
               </Link>
             </div>
-            <DownloadInvoice order={order} />
+            {order.invoice ? (<DownloadInvoice order={order} />) : null}
           </div>
         </div>
       </div>

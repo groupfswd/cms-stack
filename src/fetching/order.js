@@ -5,7 +5,7 @@ export async function getOrderById(params) {
   try {
     const res = await fetch(`${BASE_URL}/cms/orders/${params}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
       },
     });
 
@@ -26,7 +26,7 @@ export async function updateOrder(id, params) {
     const res = await fetch(`${BASE_URL}/cms/orders/${id}`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
         "content-type": "application/json",
       },
       body: JSON.stringify(params),

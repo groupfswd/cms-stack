@@ -7,6 +7,7 @@ import OrderDetail from "@/components/order/OrderDetail";
 export default function Page() {
   const [order, setOrder] = useState([]);
   const [status, setStatus] = useState("");
+  const [no_resi, setNoResi] = useState("");
   const [loading, setLoading] = useState(true);
   const { id } = useParams(true);
 
@@ -15,6 +16,7 @@ export default function Page() {
       const data = await getOrderById(id);
       setOrder(data);
       setStatus(data.status);
+      setNoResi(data.no_resi);
       setLoading(false);
     };
     getById(id);
@@ -32,9 +34,10 @@ export default function Page() {
     <div>
       <OrderDetail
         order={order}
-        id={id}
         status={status}
         setStatus={setStatus}
+        no_resi={no_resi}
+        setNoResi={setNoResi}
       />
     </div>
   );

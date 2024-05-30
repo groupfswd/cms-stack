@@ -2,7 +2,7 @@
 const nextConfig = {
   //url image
   images: {
-    domains: ["media.istockphoto.com"],
+    domains: ["localhost"],
   },
 };
 

@@ -17,6 +17,7 @@ export default function Navbar() {
   const handleLogout = () => {
     Cookies.remove("accessToken");
     router.push("/login");
+    window.location.reload();
   };
 
   const menuItems = [

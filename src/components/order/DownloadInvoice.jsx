@@ -27,7 +27,7 @@ export default function DownloadInvoice({ order }) {
     <div className="flex">
       <div className="tooltip" data-tip="Download invoice">
         <Link href="#">
-          <button className="btn btn-info btn-sm" onClick={handleDownload}>
+          <button className="btn btn-primary btn-sm" onClick={handleDownload}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
