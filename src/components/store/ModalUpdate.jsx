@@ -1,25 +1,47 @@
-import { createStore } from '@/fetching/store'
-import { useState } from 'react'
+import { getCities, getStoreById, updateStore } from "@/fetching/store";
+import { useState, useEffect } from "react";
 
-export default function ModalForm({ cities, setModal }) {
-  const [city_id, setCityId] = useState("");
-  const [name, setName] = useState("");
-  const [bank_name, setBankName] = useState("");
-  const [bank_account, setBankAccount] = useState("");
-  const [phone_number, setPhoneNumber] = useState("");
-  const [street_address, setStreetAddress] = useState("");
-  const [province, setProvince] = useState("");
-  const [postal_code, setPostalCode] = useState("");
-  const [success, setSuccess] = useState(false);
+export default function ModalForm({ storeId, setModal }) {
+  const [city_id, setCityId] = useState('');
+  const [name, setName] = useState('');
+  const [bank_name, setBankName] = useState('');
+  const [bank_account, setBankAccount] = useState('');
+  const [phone_number, setPhoneNumber] = useState('');
+  const [street_address, setStreetAddress] = useState('');
+  const [province, setProvince] = useState('');
+  const [postal_code, setPostalCode] = useState('');
+  const [cities, setCities] = useState([]);
 
-  const handleIdCity = (e) => {
-    setCityId(e.target.value);
-  };
+  useEffect(() => {
+    const fetchStoresById = async () => {
+      const store = await getStoreById(storeId);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      setCityId(store.city_id);
+      setName(store.name);
+      setBankName(store.bank_name);
+      setBankAccount(store.bank_account);
+      setPhoneNumber(store.phone_number);
+      setStreetAddress(store.street_address);
+      setProvince(store.province);
+      setPostalCode(store.postal_code);
+    };
+
+    fetchStoresById(storeId);
+  }, [storeId]);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      const data = await getCities();
+      setCities(data);
+    }
+
+    fetchCities();
+  }, []);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault()
     try {
-      await createStore({
+      await updateStore(storeId, {
         city_id: +city_id,
         name: name,
         bank_name: bank_name,
@@ -27,53 +49,31 @@ export default function ModalForm({ cities, setModal }) {
         phone_number: phone_number,
         street_address: street_address,
         province: province,
-        postal_code: postal_code
+        postal_code: postal_code,
       });
-
-      setSuccess(true);
       window.location.reload()
-      setModal(false)
     } catch (err) {
       console.log(err);
-    } finally {
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
     }
-  };
-
-  if (success) {
-    <div role="alert" className="alert alert-success flex fixed z-10 w-80 right-0">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="stroke-current shrink-0 h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>Add Store Successfully!</span>
-    </div>
   }
+
+  const handleIdCity = (e) => {
+    setCityId(e.target.value);
+  };
 
   return (
     <div className="flex fixed z-10 items-center justify-center mx-auto left-0 right-0 top-0 bottom-0">
-      <div className="modal-box w-[450px]">
-        <h3 className="font-bold text-lg mb-2">Add Store</h3>
-        <form onSubmit={handleSubmit}>
+      <div className="modal-box w-[500px]">
+        <h3 className="font-bold text-lg mb-2 text-left">Update Store</h3>
+        <form onSubmit={handleUpdate}>
           <div className="form-control flex flex-row justify-between mt-3">
             <label className="label">
               <span className="label-text">City id</span>
             </label>
             <select className="select select-bordered w-72" onChange={(e) => handleIdCity(e)} required>
-              <option value="city">Select city</option>
+              <option value="city">{city_id}</option>
               {cities.map((index) => (
-                <option key={index.id} value={index.id} >
+                <option key={index.id} value={index.id}>
                   {index.name}
                 </option>
               ))}
@@ -88,6 +88,7 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Name"
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
@@ -100,6 +101,7 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Bank name"
+              value={bank_name}
               onChange={(e) => setBankName(e.target.value)}
             />
           </div>
@@ -112,6 +114,7 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Bank account"
+              value={bank_account}
               onChange={(e) => setBankAccount(e.target.value)}
             />
           </div>
@@ -124,6 +127,7 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Phone number"
+              value={phone_number}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
@@ -136,6 +140,7 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Street address"
+              value={street_address}
               onChange={(e) => setStreetAddress(e.target.value)}
             />
           </div>
@@ -148,6 +153,7 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Province"
+              value={province}
               onChange={(e) => setProvince(e.target.value)}
             />
           </div>
@@ -160,12 +166,13 @@ export default function ModalForm({ cities, setModal }) {
               className="input input-bordered w-72"
               required
               placeholder="Postal code"
+              value={postal_code}
               onChange={(e) => setPostalCode(e.target.value)}
             />
           </div>
           <div className="flex justify-end my-2">
             <div className="modal-action mr-2">
-              <button className="btn btn-success">Submit</button>
+              <button className="btn btn-success">Update</button>
             </div>
             <div className="modal-action">
               <button onClick={() => setModal(false)} className="btn btn-active">
