@@ -5,6 +5,8 @@ import BASE_URL from "@/lib/baseUrl";
 import { accessToken } from "@/lib/getToken";
 import TableOrder from "@/components/order/Order";
 import PaginationOrder from "@/components/order/PaginationOrder";
+import Filter from "@/components/order/Filter";
+import SearchId from "@/components/order/SearchId";
 
 export default function OrderPage() {
   const [listOrders, setListOrders] = useState([]);
@@ -14,7 +16,6 @@ export default function OrderPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [filterTime, setFilterTime] = useState("");
   const [loading, setLoading] = useState(true);
-
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
 
@@ -45,6 +46,7 @@ export default function OrderPage() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+
         if (!res.ok) {
           throw new Error("Failed to fetch orders");
         }
@@ -74,14 +76,22 @@ export default function OrderPage() {
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
-        <TableOrder
-          orders={listOrders}
-          filterStatus={filterStatus}
-          filterTime={filterTime}
-          setFilterStatus={setFilterStatus}
-          setFilterTime={setFilterTime}
-          handleSortOrders={handleSortOrders}
-        />
+        <div>
+          <h1 className="text-xl font-bold py-5 pb-2 text-center">List Orders</h1>
+          <div className="mb-3 flex px-10 justify-between">
+            <Filter
+              filterStatus={filterStatus}
+              filterTime={filterTime}
+              setFilterStatus={setFilterStatus}
+              setFilterTime={setFilterTime}
+              handleSortOrders={handleSortOrders}
+            />
+            <SearchId />
+          </div>
+          <TableOrder
+            orders={listOrders}
+          />
+        </div>
       )}
 
       {totalPage === currentPage && currentPage === 1 ? null : (
