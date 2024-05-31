@@ -83,7 +83,31 @@ export default function OrderForm({ order, status, setStatus, no_resi, setNoResi
           <span>Error! Failed to update order</span>
         </div>
       )}
-      <h1 className="text-xl font-bold text-center py-5">Detail Order</h1>
+      <h1 className="text-xl font-bold text-center pt-5">Detail Order</h1>
+      <div className="flex justify-end mx-20 mb-3">
+        {order.invoice ? (<DownloadInvoice order={order} />) : (<button className='btn btn-sm' disabled>Invoice</button>)}
+        <div className="flex ml-2">
+          <Link href="/order">
+            <button className="btn btn-error btn-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                />
+              </svg>
+              Back
+            </button>
+          </Link>
+        </div>
+      </div>
       <div className="flex mb-5 justify-center">
         <div className='flex flex-col sm:flex-row border border-slate-300 p-5 rounded-md'>
           <div className="flex flex-col h-auto mr-5">
@@ -161,8 +185,12 @@ export default function OrderForm({ order, status, setStatus, no_resi, setNoResi
                       ) : (
                         <div><p>{no_resi}</p></div>
                       )}
-                      <div>
-                        <button className='btn btn-sm ml-1' onClick={() => setNoResiInput(true)}>Edit</button>
+                      <div className='flex items-center'>
+                        {noResiInput ? (
+                          <button className='btn btn-sm ml-1 btn-error' onClick={() => setNoResiInput(false)}>X</button>
+                        ) : (
+                          <button className='btn btn-sm ml-1' onClick={() => setNoResiInput(true)}>Edit</button>
+                        )}
                       </div>
                     </div>
                   </td>
@@ -355,30 +383,6 @@ export default function OrderForm({ order, status, setStatus, no_resi, setNoResi
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div className="flex flex-col mx-3">
-            <div className="flex justify-end mb-3">
-              <Link href="/order">
-                <button className="btn btn-error btn-sm">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-4"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-                    />
-                  </svg>
-                  Back
-                </button>
-              </Link>
-            </div>
-            {order.invoice ? (<DownloadInvoice order={order} />) : null}
           </div>
         </div>
       </div>
