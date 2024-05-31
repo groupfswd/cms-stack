@@ -1,19 +1,10 @@
 import Link from "next/link";
-import { currencyFormat } from "@/lib/currencyFormat";
 import Image from "next/image";
-import Filter from "@/components/order/Filter";
-import SearchId from "@/components/order/SearchId";
+import { currencyFormat } from "@/lib/currencyFormat";
 import { convertDate } from "@/lib/convertDate";
 import { useState } from "react";
 
-export default function TableOrder({
-  orders,
-  filterStatus,
-  filterTime,
-  setFilterStatus,
-  setFilterTime,
-  handleSortOrders,
-}) {
+export default function TableOrder({ orders }) {
   const [modal, setModal] = useState(false);
 
   const statusColors = {
@@ -28,17 +19,6 @@ export default function TableOrder({
 
   return (
     <div>
-      <h1 className="text-xl font-bold pt-5 pb-2 text-center">List Orders</h1>
-      <div className="mb-3 flex px-10 justify-between">
-        <Filter
-          filterStatus={filterStatus}
-          filterTime={filterTime}
-          setFilterStatus={setFilterStatus}
-          setFilterTime={setFilterTime}
-          handleSortOrders={handleSortOrders}
-        />
-        <SearchId />
-      </div>
       <div className="overflow-x-auto px-10">
         <table className="table table-zebra border-spacing-20 text-center mx-auto border">
           <thead>
@@ -78,7 +58,9 @@ export default function TableOrder({
                 </td>
                 <td>
                   {order.payment_receipt ? (
-                    <button className="btn btn-info btn-sm" onClick={() => setModal(true)}>Show</button>
+                    <button className="btn btn-info btn-sm" onClick={() => setModal(true)}>
+                      View
+                    </button>
                   ) : (
                     <button className="btn btn-info btn-sm" disabled>N/A</button>
                   )}
