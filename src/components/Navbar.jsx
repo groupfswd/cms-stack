@@ -120,7 +120,7 @@ export default function Navbar() {
 
   return (
     <div className="mb-[70px] z-40">
-      <div className="w-full flex justify-between items-center p-3 shadow-sm bg-gray-300 px-2 sm:px-10 fixed top-0 left-0">
+      <div className="w-full flex justify-between items-center p-2 shadow-sm bg-gray-300 px-2 sm:px-10 fixed top-0 left-0">
         <div className="flex items-center">
           <button
             onClick={() => setNav(!nav)}

@@ -9,9 +9,9 @@ export const metadata = {
   title: "E-Commerce Kesayangan Bunda",
   description: "E-Commerce Kesayangan Bunda",
   icons: {
-    icon:['/favicon.ico?v=4'],
-    apple:['/apple-touch-icon.png?v=4'],
-    shorcut:['/apple-touch-icon.png'],
+    icon: ['/favicon.ico?v=4'],
+    apple: ['/apple-touch-icon.png?v=4'],
+    shorcut: ['/apple-touch-icon.png'],
   }
 };
 
@@ -19,9 +19,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex flex-col h-screen justify-between" >
-          <Navbar/>
-          <div className="">{children}</div>
+        <div className="flex flex-col justify-between" >
+          <Navbar />
+          <div className="h-screen">{children}</div>
           <Footer />
         </div>
       </body>
