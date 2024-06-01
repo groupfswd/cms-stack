@@ -42,7 +42,7 @@ const Pagination = (totalPages) => {
 
     const allPages = generatePagination(currentPage, totalPages);
 
-    const PaginationNumber = () => ({
+    const PaginationNumber = ({
         page,
         href,
         position,
@@ -65,7 +65,7 @@ const Pagination = (totalPages) => {
         );
     };
 
-    const PaginationArrow = () => ({ href, direction, isDisabled }) => {
+    const PaginationArrow = ({ href, direction, isDisabled }) => {
         const clasName = clsx("flex h-10 w-10 items-center justify-center text-sm border",
             {
                 "pointer-events-none text-gray-300": isDisabled,
@@ -93,7 +93,7 @@ const Pagination = (totalPages) => {
             <PaginationArrow direction="left" href={createPageUrl(currentPage -1)} isDisabled={currentPage <= 1}/>
             <div className="flex -space-x-px">
                 {allPages.map((page, index) => {
-                    let position = "first" || "last" || "single" || "middle" || undefined;
+                    let position = ["first" || "last" || "single" || "middle" || undefined];
 
                     if(index === 0) position = "first";
                     if(index === allPages.length - 1) position = "last";

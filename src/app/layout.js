@@ -19,9 +19,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex flex-col justify-between" >
+        <div className = "flex flex-col h-screen justify-between" >
           <Navbar />
-          <div className="h-screen">{children}</div>
+          <div>{children}</div>
           <Footer />
         </div>
       </body>

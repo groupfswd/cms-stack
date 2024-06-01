@@ -4,6 +4,7 @@ import { convertToRupiah } from "@/lib/convertRupiah";
 import DetailProduct from "@/components/product/DetailProduct";
 import { getAllProducts } from "@/fetching/product";
 import { getCategory } from "@/fetching/category";
+import Pagination from "@/components/product/Pagination";
 
 export const ListTable = async (query) => {
 
@@ -90,6 +91,9 @@ export const ListTable = async (query) => {
                     ))}
                 </tbody>
             </table>
+            <div className="flex justify-center mt-4">
+                <Pagination totalPages={products.result.totalPages} currentPage={products.result.currentPage} limit={5}/>
+            </div>
         </>
     )
 }

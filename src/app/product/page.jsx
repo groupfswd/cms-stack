@@ -4,14 +4,13 @@ import Search from "@/components/product/Search";
 import SearchMinRange from "@/components/product/SearchMinRange";
 import SearchMaxRange from "@/components/product/SearchMaxRange";
 import ListTable from "@/components/product/ListProducts";
-// import Pagination from "@/components/product/Pagination";
 
 export default async function ProductPage({searchParams}) {
     const query = searchParams?.search || "";
     const min_price = +searchParams?.min_price || "";
     const max_price = +searchParams?.max_price || "";
     const currentPage = +searchParams?.page || 1;
-    const limit = 5;
+    const limit = 5
     const category = await getCategory();
     return (
     <>
@@ -26,8 +25,7 @@ export default async function ProductPage({searchParams}) {
                         <SearchMaxRange />
                     </div>
                 </div>
-                <ListTable search={query} currentPage={currentPage} limit={limit} min_price={min_price} max_price={max_price} />
-                {/* <Pagination totalPages={1} /> */}
+                <ListTable search={query} currentPage={currentPage} min_price={min_price} max_price={max_price} limit={limit} />
             </div>
         </div>
     </>

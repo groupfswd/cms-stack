@@ -7,7 +7,8 @@ export const getAllProducts = async (query) => {
             "search": query.search,
             "min_price": query.min_price,
             "max_price": query.max_price,
-            "page": query.currentPage
+            "page": query.currentPage,
+            "limit": query.limit
         };
 
         let queryParams = Object.keys(params)
