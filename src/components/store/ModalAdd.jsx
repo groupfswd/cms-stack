@@ -10,7 +10,6 @@ export default function ModalAdd({ setModal }) {
   const [street_address, setStreetAddress] = useState("");
   const [province, setProvince] = useState("");
   const [postal_code, setPostalCode] = useState("");
-  const [success, setSuccess] = useState(false);
   const [cities, setCities] = useState([]);
 
   const handleIdCity = (e) => {
@@ -28,48 +27,20 @@ export default function ModalAdd({ setModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await createStore({
-        city_id: +city_id,
-        name: name,
-        bank_name: bank_name,
-        bank_account: bank_account,
-        phone_number: phone_number,
-        street_address: street_address,
-        province: province,
-        postal_code: postal_code
-      });
+    await createStore({
+      city_id: +city_id,
+      name: name,
+      bank_name: bank_name,
+      bank_account: bank_account,
+      phone_number: phone_number,
+      street_address: street_address,
+      province: province,
+      postal_code: postal_code
+    });
 
-      setSuccess(true);
-      window.location.reload()
-      setModal(false)
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-    }
+    setModal(false)
+    window.location.reload()
   };
-
-  if (success) {
-    <div role="alert" className="alert alert-success flex fixed z-10 w-80 right-0">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="stroke-current shrink-0 h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>Add Store Successfully!</span>
-    </div>
-  }
 
   return (
     <div className="flex fixed z-10 items-center justify-center mx-auto left-0 right-0 top-0 bottom-0">
@@ -118,7 +89,7 @@ export default function ModalAdd({ setModal }) {
               <span className="label-text">Bank account</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="input input-bordered w-72"
               required
               placeholder="Bank account"
@@ -130,7 +101,7 @@ export default function ModalAdd({ setModal }) {
               <span className="label-text">Phone number</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="input input-bordered w-72"
               required
               placeholder="Phone number"

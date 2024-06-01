@@ -4,15 +4,22 @@ import { useState } from "react";
 
 export default function StoreTable({ stores }) {
   const [modal, setModal] = useState(false);
+  const [storeId, setStoreId] = useState('');
 
   const handleDelete = async (id) => {
-    try {
-      await deleteStore(id);
-      window.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
+    await deleteStore(id);
+    window.location.reload();
   };
+
+  const getIdUpdate = (e) => {
+    setStoreId(e)
+    setModal(true)
+  }
+
+  const getIdDelete = (e) => {
+    setStoreId(e)
+    document.getElementById("my_modal_5").showModal()
+  }
 
   return (
     <div className="flex flex-col justify-center">
@@ -45,7 +52,7 @@ export default function StoreTable({ stores }) {
                   <td>{store.postal_code}</td>
                   <td>
                     <div className="tooltip" data-tip="Update">
-                      <button className="btn btn-primary mr-2 btn-sm" onClick={() => setModal(true)}>
+                      <button className="btn btn-primary mr-2 btn-sm" value={store.id} onClick={() => getIdUpdate(store.id)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -63,12 +70,13 @@ export default function StoreTable({ stores }) {
                       </button>
                     </div>
                     {modal && (
-                      <ModalUpdate storeId={store.id} setModal={setModal} />
+                      <ModalUpdate storeId={storeId} setModal={setModal} />
                     )}
                     <div className="tooltip" data-tip="Delete">
                       <button
                         className="btn btn-error btn-sm"
-                        onClick={() => document.getElementById("my_modal_5").showModal()}
+                        value={store.id}
+                        onClick={() => getIdDelete(store.id)}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -92,11 +100,11 @@ export default function StoreTable({ stores }) {
                           Confirm delete!
                         </h3>
                         <p className="py-4 text-left text-lg">
-                          Are you sure you want to delete this store?
+                          Are you sure delete it?
                         </p>
                         <div className="modal-action">
                           <form method="dialog">
-                            <button onClick={() => handleDelete(store.id)} className="btn btn-error mr-2">
+                            <button onClick={() => handleDelete(storeId)} className="btn btn-error mr-2">
                               Delete
                             </button>
                             <button className="btn btn-default">Close</button>
