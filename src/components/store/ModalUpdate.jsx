@@ -40,21 +40,19 @@ export default function ModalForm({ storeId, setModal }) {
 
   const handleUpdate = async (e) => {
     e.preventDefault()
-    try {
-      await updateStore(storeId, {
-        city_id: +city_id,
-        name: name,
-        bank_name: bank_name,
-        bank_account: bank_account,
-        phone_number: phone_number,
-        street_address: street_address,
-        province: province,
-        postal_code: postal_code,
-      });
-      window.location.reload()
-    } catch (err) {
-      console.log(err);
-    }
+    await updateStore(storeId, {
+      city_id: +city_id,
+      name: name,
+      bank_name: bank_name,
+      bank_account: bank_account,
+      phone_number: phone_number,
+      street_address: street_address,
+      province: province,
+      postal_code: postal_code,
+    });
+
+    setModal(false)
+    window.location.reload()
   }
 
   const handleIdCity = (e) => {
@@ -110,7 +108,7 @@ export default function ModalForm({ storeId, setModal }) {
               <span className="label-text">Bank account</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="input input-bordered w-72"
               required
               placeholder="Bank account"
@@ -123,7 +121,7 @@ export default function ModalForm({ storeId, setModal }) {
               <span className="label-text">Phone number</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="input input-bordered w-72"
               required
               placeholder="Phone number"
