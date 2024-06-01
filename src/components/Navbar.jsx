@@ -142,7 +142,8 @@ export default function Navbar() {
             </svg>
           </button>
           <h1 className="text-xl sm:text-2xl px-2 font-bold text-black">
-            Stack <span className="text-blue-500">Master</span>
+            Baby<span style={{ color: "#2563EB" }}>Wonder</span>
+            {/* Stack <span className="text-blue-500">Master</span> */}
           </h1>
         </div>
         <button
@@ -246,7 +247,8 @@ export default function Navbar() {
           </svg>
         </button>
         <h2 className="text-2xl p-4 font-bold text-black text-center">
-          Stack <span className="text-blue-500">Master</span>
+          Baby<span style={{ color: "#2563EB" }}>Wonder</span>
+          {/* Stack <span className="text-blue-500">Master</span> */}
         </h2>
         <nav className="mt-5">
           <ul className="flex flex-col p-3 text-gray-800">
