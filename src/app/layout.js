@@ -7,12 +7,12 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-   title: "E-Commerce Kesayangan Bunda",
-   description: "E-Commerce Kesayangan Bunda",
+   title: "Baby Wonder",
+   description: "Baby Wonder",
    icons: {
-      icon: ['/favicon.ico?v=4'],
-      apple: ['/apple-touch-icon.png?v=4'],
-      shorcut: ['/apple-touch-icon.png'],
+      icon: ['/icon.svg?v=4'],
+      apple: ['/icon.svg?v=4'],
+      shorcut: ['/icon.svg'],
    }
 };
 
