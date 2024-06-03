@@ -17,6 +17,10 @@ export default function StorePage() {
     }
 
     fetchStores();
+
+    const intervalId = setInterval(fetchStores, 1000); // Fetch every 1 seconds
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -30,14 +34,7 @@ export default function StorePage() {
           <div className="flex justify-center py-5">
             <h1 className="text-xl font-bold">Stores</h1>
           </div>
-          <div className="flex mx-10">
-            <button onClick={() => setModal(true)} className="btn btn-info btn-sm">
-              + Add store
-            </button>
-          </div>
-          {modal && (
-            <ModalAdd setModal={setModal} />
-          )}
+            <ModalAdd />
           <TableStore stores={stores} />
         </div>
       )}

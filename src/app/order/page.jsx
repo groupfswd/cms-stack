@@ -1,106 +1,60 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import ListOrders from "@/components/order/ListOrders";
 import BASE_URL from "@/lib/baseUrl";
-import { accessToken } from "@/lib/getToken";
-import TableOrder from "@/components/order/Order";
-import PaginationOrder from "@/components/order/PaginationOrder";
-import Filter from "@/components/order/Filter";
-import SearchId from "@/components/order/SearchId";
+import FilterStatus from "@/components/order/FilterStatus";
+import FilterTime from "@/components/order/FilterTime";
+import FilterSearch from "@/components/order/filterSearch";
+import FilterReset from "@/components/order/FilterReset";
+import { accessToken } from "@/lib/serverToken";
+import { Suspense } from "react";
 
-export default function OrderPage() {
-  const [listOrders, setListOrders] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [pagination, setPagination] = useState({});
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterTime, setFilterTime] = useState("");
-  const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
+async function getOrders(query) {
+	try {
+		let params = {
+			limit: query?.limit || 5,
+			page: query?.page || 1,
+			filter_status: query?.filter_status || '',
+			sort_by: query?.sort_by || '',
+			q: query?.q || ''
+		};
 
-  const handleSortOrders = (page) => {
-    setCurrentPage(page);
+		let queryParams = Object.keys(params)
+			.map((query) => encodeURIComponent(query) + "=" + encodeURIComponent(params[query]))
+			.join("&");
 
-    const params = {};
+		const res = await fetch(`${BASE_URL}/cms/orders?${queryParams}`, {
+			method: "GET",
+			headers: {
+				"Authorization": `Bearer ${accessToken}`,
+			},
+			cache: "no-store",
+		});
 
-    if (filterStatus) {
-      params.filter_status = filterStatus;
-    }
+		const data = await res.json();
 
-    if (filterTime) {
-      params.sort_by = filterTime;
-    }
+		return data;
+	} catch (error) {
+		console.log(error);
+	}
+}
 
-    const searchParams = new URLSearchParams(params);
-    const newUrl = `&${searchParams.toString()}`;
+export default async function OrderPage({ searchParams }) {
+	const query = searchParams?.query || '';
+	const currentPage = searchParams?.page || 1;
 
-    window.history.pushState(null, "", `/order?page=${page}${newUrl}`);
-  };
+	const orders = await getOrders(searchParams);
 
-  useEffect(() => {
-    const getAllOrders = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/cms/orders?${params}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-
-        const data = await res.json();
-
-        setListOrders(data.data);
-        setCurrentPage(data.currentPage);
-        setTotalPage(data.totalPages);
-        setPagination({
-          currentPage: data.currentPage,
-          totalPages: data.totalPages,
-        });
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    getAllOrders(currentPage);
-  }, [currentPage]);
-
-  return (
-    <div>
-      {loading ? (
-        <div className="flex h-[500px] items-center justify-center">
-          <span className="loading loading-dots loading-lg"></span>
-        </div>
-      ) : (
-        <div>
-          <h1 className="text-xl font-bold py-5 pb-2 text-center">List Orders</h1>
-          <div className="mb-3 flex px-10 justify-between">
-            <Filter
-              filterStatus={filterStatus}
-              filterTime={filterTime}
-              setFilterStatus={setFilterStatus}
-              setFilterTime={setFilterTime}
-              handleSortOrders={handleSortOrders}
-            />
-            <SearchId />
-          </div>
-          <TableOrder
-            orders={listOrders}
-          />
-        </div>
-      )}
-
-      {totalPage === currentPage && currentPage === 1 ? null : (
-        <PaginationOrder
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          handleSortOrders={handleSortOrders}
-        />
-      )}
-    </div>
-  );
+	return (
+		<div>
+			<h1 className="text-xl font-bold py-5 text-center">List Orders</h1>
+			<div className="flex flex-row justify-between mx-10">
+				<div className="flex flex-row">
+					<FilterStatus />
+					<FilterTime />
+					<FilterReset />
+				</div>
+				<FilterSearch />
+			</div>
+			<ListOrders orders={orders} currentPage={currentPage} />
+		</div>
+	);
 }
