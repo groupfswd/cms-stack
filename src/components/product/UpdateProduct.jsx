@@ -3,12 +3,15 @@ import { useState } from "react";
 import BASE_URL from "@/lib/baseUrl";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import toast from 'react-hot-toast';
 
 const accessToken = Cookies.get("accessToken")
 
+const notifySuccessUpdate = () => toast.success("Product updated successfully")
+
 const upload = async (formData) => {
     try {
-        const response = await fetch(`${BASE_URL}/cms/products/upload`,{
+        const response = await fetch(`${BASE_URL}/cms/products/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -22,7 +25,7 @@ const upload = async (formData) => {
     }
 }
 
-export default function UpdateProduct ({...product}) {
+export default function UpdateProduct({...product}){
     const [category_id, setCategoryId] = useState(product.product.category_id)
     const [name, setName] = useState(product.product.name)
     const [sku, setSku] = useState(product.product.sku)
@@ -38,7 +41,7 @@ export default function UpdateProduct ({...product}) {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        
+
         const dataUpload = await upload(formData);
 
         await fetch(`${BASE_URL}/cms/products/${product.product.id}`, {
@@ -58,6 +61,7 @@ export default function UpdateProduct ({...product}) {
                 image: dataUpload
             })
         });
+        notifySuccessUpdate()
         router.refresh();
         setModal(false);
     }

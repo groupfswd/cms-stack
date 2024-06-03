@@ -3,8 +3,11 @@ import { useState } from "react";
 import BASE_URL from "@/lib/baseUrl";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import toast from 'react-hot-toast';
 
 const accessToken = Cookies.get("accessToken")
+
+const notifyUpdateCategory = () => toast.success("Category updated successfully")
 
 export default function updateCategory(category) {
     const [name, setName] = useState(category.name);
@@ -23,6 +26,7 @@ export default function updateCategory(category) {
                 name: name
             })
         });
+        notifyUpdateCategory();
         router.refresh();
         setModal(false);
     }

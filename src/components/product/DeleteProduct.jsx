@@ -3,8 +3,11 @@ import { useState } from "react";
 import BASE_URL from "@/lib/baseUrl";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import toast from 'react-hot-toast';
 
 const accessToken = Cookies.get("accessToken")
+
+const notifySuccessDelete = () => toast.success("Product deleted successfully")
 
 export default function DeleteProduct(product) {
     const [modal, setModal] = useState(false);
@@ -20,6 +23,7 @@ export default function DeleteProduct(product) {
                 status: "inactive",
             })
         });
+        notifySuccessDelete();
         router.refresh();
         setModal(false);
     }

@@ -3,8 +3,11 @@ import { useState } from "react";
 import BASE_URL from "@/lib/baseUrl";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import toast from 'react-hot-toast';
 
 const accessToken = Cookies.get("accessToken")
+
+const notifySuccessCreate = () => toast.success("Product created successfully")
 
 const upload = async (formData) => {
     try {
@@ -69,6 +72,7 @@ export default function AddProduct ({...dataCategories}) {
         setWeight("");
         setDescription("");
         setImage("");
+        notifySuccessCreate();
         router.refresh();
         setModal(false);
     }
